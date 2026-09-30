@@ -1,20 +1,31 @@
 export const colors = {
-  primary: '#6C4CE8',
+  // Primary
+  primary: '#000000',
+  primaryLight: '#333333',
 
-  background: '#F8F8FA',
+  // Background
+  background: '#F7F7F7',
   surface: '#FFFFFF',
 
-  text: '#17171A',
-  secondaryText: '#77777F',
+  // Text
+  text: '#000000',
+  secondaryText: '#666666',
+  mutedText: '#999999',
 
-  border: '#E8E8EC',
+  // Borders
+  border: '#E5E5E5',
 
-  success: '#2DBE7F',
-  danger: '#EF5350',
-  warning: '#F5A623',
+  // Status
+  success: '#22C55E',
+  danger: '#EF4444',
+  warning: '#F59E0B',
 
+  // Chat
+  sentMessage: '#000000',
+  receivedMessage: '#F0F0F0',
+
+  // Common
   white: '#FFFFFF',
   black: '#000000',
-
   transparent: 'transparent',
 } as const;
