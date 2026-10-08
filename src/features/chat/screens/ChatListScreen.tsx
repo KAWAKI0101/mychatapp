@@ -17,70 +17,15 @@ import {
 import {colors} from '../../../theme/colors';
 import {radius} from '../../../theme/radius';
 import {spacing} from '../../../theme/spacing';
-
+import {MOCK_CHATS, Chat} from '../mock/message';
 import type {MainStackParamList} from '../../../navigation/types';
 
 type ChatNavigationProp = NativeStackNavigationProp<
   MainStackParamList
 >;
 
-type Chat = {
-  id: string;
-  name: string;
-  message: string;
-  time: string;
-  initial: string;
-  unreadCount: number;
-  online: boolean;
-};
 
-const MOCK_CHATS: Chat[] = [
-  {
-    id: '1',
-    name: 'Alex',
-    message: 'Hey, are you free today?',
-    time: '10:42',
-    initial: 'A',
-    unreadCount: 2,
-    online: true,
-  },
-  {
-    id: '2',
-    name: 'Sarah',
-    message: "Let's discuss the project.",
-    time: '09:18',
-    initial: 'S',
-    unreadCount: 0,
-    online: true,
-  },
-  {
-    id: '3',
-    name: 'John',
-    message: 'See you tomorrow!',
-    time: 'Yesterday',
-    initial: 'J',
-    unreadCount: 0,
-    online: false,
-  },
-  {
-    id: '4',
-    name: 'Emma',
-    message: 'That sounds great 👍',
-    time: 'Yesterday',
-    initial: 'E',
-    unreadCount: 4,
-    online: false,
-  },
-  {
-    id: '5',
-    name: 'David',
-    message: 'Can you send me the file?',
-    time: 'Monday',
-    initial: 'D',
-    unreadCount: 0,
-    online: false,
-  },
-];
+
 
 export const ChatListScreen = () => {
   const navigation = useNavigation<ChatNavigationProp>();

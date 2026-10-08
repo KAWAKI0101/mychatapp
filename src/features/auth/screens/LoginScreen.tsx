@@ -8,6 +8,10 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import CountryPicker, {
+    getEmojiFlag,
+    type CountryCode,
+} from 'react-native-country-picker-modal';
 import { AuthStackParamList } from 'src/navigation/types';
 import { AppContainer } from '../../../components/common/AppContainer';
 import { AppInput } from '../../../components/common/AppInput';
@@ -22,15 +26,17 @@ type LoginNavigationProps = NativeStackNavigationProp<AuthStackParamList, 'Login
 const LoginScreen = () => {
     const navigation = useNavigation<LoginNavigationProps>();
     const [phone, setPhone] = useState('');
+    const [countryCode, setCountryCode] = useState<CountryCode>('US');
+    const [callingCode, setCallingCode] = useState('1');
 
-    
+
     const handleContinue = () => {
-        const trimmedPhone = phone.trim();
-        if (!trimmedPhone || trimmedPhone.length < 10) {
+        const nationalNumber = phone.replace(/\D/g, '');
+        if (nationalNumber.length < 4 || nationalNumber.length > 15) {
             return;
         }
 
-        navigation.navigate('Otp', { phone: trimmedPhone });
+        navigation.navigate('Otp', { phone: `+${callingCode} ${nationalNumber}` });
     };
 
     return (
@@ -38,80 +44,58 @@ const LoginScreen = () => {
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : undefined}
                 style={styles.keyboardView}>
-                <View style={styles.logoWrap}>
-                    <View style={styles.logoBadge}>
-                        <AppText variant="h2" color={colors.white}>
-                            M
-                        </AppText>
-                    </View>
-                </View>
 
-                <View style={styles.containertitle}>
-                    <AppText variant="h1" style={styles.title}>
-                        Welcome back
-                    </AppText>
-                </View>
+                {/* Rive animated avatar goes here */}
+                <View style={styles.avatarArea} />
 
-                <View style={styles.subtitlecontainer}>
-
-                    <AppText variant="body" color={colors.secondaryText} style={styles.subtitle}>
-                        Sign in to continue your conversations with friends and family.
-                    </AppText>
-                </View>
-                <View style={styles.inputCard}>
-                    <AppText variant="caption" color={colors.secondaryText} style={styles.label}>
-                        Phone number
+                <View style={styles.card}>
+                    <AppText variant="body" color={colors.secondaryText} style={styles.centerText}>
+                        Welcome to MyChatApp! Please login in to continue.
                     </AppText>
 
-                    <View style={styles.inputRow}>
-                        <View style={styles.countryCode}>
-                            <AppText variant="bodyMedium">+1</AppText>
-                        </View>
+                    <View style={styles.phoneRow}>
+                        <CountryPicker
+                            countryCode={countryCode}
+                            withFilter
+                            withFlag
+                            withCallingCode
+                            withEmoji
+                            onSelect={country => {
+                                setCountryCode(country.cca2);
+                                setCallingCode(country.callingCode[0]);
+                            }}
+                            renderFlagButton={({ onOpen }) => (
+                                <Pressable
+                                    accessibilityRole="button"
+                                    accessibilityLabel={`Select country calling code, currently +${callingCode}`}
+                                    onPress={onOpen}
+                                    style={styles.countryCode}>
+                                    <AppText variant="bodyMedium">
+                                        {getEmojiFlag(countryCode)}  +{callingCode}  ⌄
+                                    </AppText>
+                                </Pressable>
+                            )}
+                        />
 
                         <AppInput
                             value={phone}
                             onChangeText={setPhone}
-                            placeholder="Enter your number"
+                            placeholder="--- --- ----"
                             keyboardType="phone-pad"
                             autoCapitalize="none"
                             autoCorrect={false}
-                            style={styles.input}
+                            style={styles.phoneInput}
                         />
                     </View>
-                </View>
 
-                <AppButton
-                    title='Continue'
-                    onPress={handleContinue}
-                    style={({ pressed }:any) => [
-                        styles.primaryButton,
-                        pressed && styles.primaryButtonPressed,
-                    ]}
-                    >
-
-                </AppButton>
-
-                <View style={styles.divider}>
-                    <View style={styles.dividerLine} />
-                    <AppText variant="caption" color={colors.mutedText} style={styles.dividerText}>
-                        or
-                    </AppText>
-                    <View style={styles.dividerLine} />
-                </View>
-
-                <AppButton title='Continue with Google' style={styles.secondaryButton}>
-                    <View style={styles.googleMark} />
-                </AppButton>
-
-                <View style={styles.footer}>
-                    <AppText variant="body" color={colors.secondaryText}>
-                        New here?
-                    </AppText>
-                    <Pressable>
-                        <AppText variant="bodyMedium" color={colors.primary} style={styles.signUpText}>
-                            Create account
-                        </AppText>
-                    </Pressable>
+                    <AppButton
+                        title="Login with Phone number"
+                        onPress={handleContinue}
+                        style={({ pressed }: any) => [
+                            styles.signInButton,
+                            pressed && styles.primaryButtonPressed,
+                        ]}
+                    />
                 </View>
             </KeyboardAvoidingView>
         </AppContainer>
@@ -126,143 +110,78 @@ const styles = StyleSheet.create({
     },
     keyboardView: {
         flex: 1,
-        justifyContent: 'center',
-        paddingVertical: spacing.huge,
+        justifyContent: 'flex-end',
     },
-    logoWrap: {
-        alignItems: 'center',
-        marginBottom: spacing.xxxl,
+    avatarArea: {
+        flex: 1, // Rive avatar area
+
+        backgroundColor: colors.black,
     },
-    logoBadge: {
-        width: 84,
-        height: 84,
-        borderRadius: radius.round,
-        backgroundColor: colors.primary,
-        justifyContent: 'center',
-        alignItems: 'center',
-        shadowColor: colors.black,
-        shadowOffset: { width: 0, height: 12 },
-        shadowOpacity: 0.12,
-        shadowRadius: 20,
-        elevation: 6,
+    card: {
+        backgroundColor: colors.white,
+        borderTopLeftRadius: 60,
+        borderTopRightRadius: 60,
+        paddingHorizontal: spacing.xl,
+        paddingTop: spacing.xxl,
+        paddingBottom: spacing.xxl,
+        zIndex: 99,
     },
-    title: {
-        marginBottom: spacing.md,
-        marginVertical: spacing.md
+    centerText: {
+        textAlign: 'center',
+        gap: spacing.md,
+        marginBottom: spacing.xl,
     },
-    containertitle: {
-        justifyContent: "center",
-        alignItems: 'center'
+    signUpText: {
+        marginTop: spacing.xs,
+        marginBottom: spacing.xl,
     },
-    subtitle: {
-        marginBottom: spacing.xxl,
-        lineHeight: 24,
-    },
-    inputCard: {
-        marginBottom: spacing.xxl,
-        margin:spacing.sm
-    },
-    label: {
-        marginBottom: spacing.sm,
-        marginLeft: spacing.xs,
-    },
-    subtitlecontainer:{
-        justifyContent:"center",
-        alignItems:"center",
-        margin:spacing.md
-    },
-    inputRow: {
+    phoneRow: {
         flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: colors.surface,
-        borderWidth: 1,
-        borderColor: colors.border,
-        borderRadius: radius.xl,
-        paddingLeft: spacing.sm,
-        paddingRight: spacing.md,
-        shadowColor: colors.black,
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.03,
-        shadowRadius: 10,
-        elevation: 2,
+        gap: spacing.lg,
+        marginBottom: spacing.md,
     },
     countryCode: {
-        minWidth: 52,
+        height: 60,
+        paddingHorizontal: spacing.lg,
+        backgroundColor: '#F0F0F0',
+        borderRadius: radius.xl,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingVertical: spacing.md,
-        borderRightWidth: 1,
-        borderRightColor: colors.border,
-        marginRight: spacing.md,
     },
-    input: {
+    phoneInput: {
+        flex: 1,
+        height: 60,
+        backgroundColor: '#F0F0F0',
+        borderWidth: 0,
+        borderRadius: radius.xl,
+    },
+    passwordRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: 60,
+        backgroundColor: '#F0F0F0',
+        borderRadius: radius.xl,
+        paddingHorizontal: spacing.lg,
+        marginBottom: spacing.lg,
+    },
+    passwordInput: {
         flex: 1,
         borderWidth: 0,
         backgroundColor: 'transparent',
-        minHeight: 56,
         paddingHorizontal: 0,
-        paddingVertical: 0,
-        borderRadius: 0,
     },
-    primaryButton: {
-        backgroundColor: colors.primary,
-        paddingVertical: spacing.md,
-        borderRadius: radius.xl,
+    forgot: {
+        textAlign: 'center',
+        marginBottom: spacing.xl,
+    },
+    signInButton: {
+        backgroundColor: colors.black,
+        paddingVertical: spacing.lg,
+        borderRadius: radius.round,
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: spacing.md,
-        shadowColor: colors.black,
-        shadowOffset: { width: 0, height: 20 },
-        shadowOpacity: 0.12,
-        shadowRadius: 18,
-        elevation: 5,
     },
     primaryButtonPressed: {
         opacity: 0.9,
-    },
-    divider: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: spacing.xl,
-    },
-    dividerLine: {
-        flex: 1,
-        height: 1,
-        backgroundColor: colors.border,
-    },
-    dividerText: {
-        marginHorizontal: spacing.md,
-    },
-    secondaryButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: colors.surface,
-        borderRadius: radius.xl,
-        borderWidth: 1,
-        borderColor: colors.border,
-        paddingVertical: spacing.xl,
-        marginBottom: spacing.xxl,
-    },
-    googleMark: {
-        width: 18,
-        height: 18,
-        borderRadius: 9,
-        backgroundColor: '#EA4335',
-        marginRight: spacing.md,
-        shadowColor: colors.black,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.08,
-        shadowRadius: 4,
-        elevation: 1,
-    },
-    footer: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: spacing.xs,
-    },
-    signUpText: {
-        marginLeft: spacing.xs,
     },
 });

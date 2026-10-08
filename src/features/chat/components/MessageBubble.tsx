@@ -1,14 +1,99 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React from 'react';
+import {StyleSheet, View} from 'react-native';
 
-const MessageBubble = () => {
+import {AppText} from '../../../components/common';
+
+import {colors} from '../../../theme/colors';
+import {radius} from '../../../theme/radius';
+import {spacing} from '../../../theme/spacing';
+
+import type {Message} from '../types/chat.types';
+
+type MessageBubbleProps = {
+  message: Message;
+};
+
+export const MessageBubble = ({
+  message,
+}: MessageBubbleProps) => {
   return (
-    <View>
-      <Text>MessageBubble</Text>
+    <View
+      style={[
+        styles.messageRow,
+        message.isMine
+          ? styles.myMessageRow
+          : styles.otherMessageRow,
+      ]}>
+      
+      <View
+        style={[
+          styles.messageBubble,
+          message.isMine
+            ? styles.myMessage
+            : styles.otherMessage,
+        ]}>
+        
+        <AppText
+          variant="body"
+          color={
+            message.isMine
+              ? colors.white
+              : colors.black
+          }>
+          {message.text}
+        </AppText>
+
+        <AppText
+          variant="caption"
+          color={
+            message.isMine
+              ? '#CCCCCC'
+              : colors.mutedText
+          }
+          style={styles.messageTime}>
+          {message.time}
+        </AppText>
+
+      </View>
     </View>
-  )
-}
+  );
+};
 
-export default MessageBubble
+const styles = StyleSheet.create({
+  messageRow: {
+    width: '100%',
+    marginBottom: spacing.sm,
+  },
 
-const styles = StyleSheet.create({})
+  myMessageRow: {
+    alignItems: 'flex-end',
+  },
+
+  otherMessageRow: {
+    alignItems: 'flex-start',
+  },
+
+  messageBubble: {
+    maxWidth: '78%',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: radius.lg,
+  },
+
+  myMessage: {
+    backgroundColor: colors.black,
+    borderBottomRightRadius: spacing.xs,
+  },
+
+  otherMessage: {
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderBottomLeftRadius: spacing.xs,
+  },
+
+  messageTime: {
+    marginTop: spacing.xs,
+    alignSelf: 'flex-end',
+  },
+});

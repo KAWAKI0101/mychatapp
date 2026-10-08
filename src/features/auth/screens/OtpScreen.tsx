@@ -147,7 +147,7 @@ export const OtpScreen = () => {
             <AppText
               variant="bodyMedium"
               style={styles.phone}>
-              +1 {phone}
+              {phone}
             </AppText>
           </View>
 
