@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     avatarArea: {
         flex: 1, // Rive avatar area
 
-        backgroundColor: colors.black,
+        // backgroundColor: colors.black,
     },
     card: {
         backgroundColor: colors.white,

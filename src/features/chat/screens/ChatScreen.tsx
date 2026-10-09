@@ -19,7 +19,7 @@ import type { MainStackParamList } from '../../../navigation/types';
 import { ChatHeader } from '../components/ChatHeader';
 import { Message } from '../types/chat.types';
 import { INITIAL_MESSAGES } from '../mock/message';
-
+import { TypingIndicator } from '../components/TypingIndicator' 
 type ChatNavigationProp = NativeStackNavigationProp<
   MainStackParamList,
   'Chat'
@@ -38,11 +38,18 @@ const ChatScreen = () => {
 
   const { name } = route.params;
 
+  const [isTyping, setIsTyping] = useState(false);
   const [messages, setMessages] =
     useState<Message[]>(INITIAL_MESSAGES);
   const messagesListRef = useRef<FlatList<Message>>(null);
 
   const handleSend = (text: string) => {
+
+    const trimmedText = text.trim();
+    
+    if (!trimmedText) {
+      return;
+    }
     const newMessage: Message = {
       id: Date.now().toString(),
       text,
@@ -51,11 +58,20 @@ const ChatScreen = () => {
         minute: '2-digit',
       }),
       isMine: true,
+      status: 'sent',
     };
 
     setMessages(prev => [...prev, newMessage]);
-
+ simulateTyping();
   };
+
+  const simulateTyping = () => {
+  setIsTyping(true);
+
+  setTimeout(() => {
+    setIsTyping(false);
+  }, 2000);
+};
   const renderMessage = ({
     item,
   }: {
@@ -97,7 +113,7 @@ const ChatScreen = () => {
           keyboardShouldPersistTaps="handled"
         />
 
-
+        <TypingIndicator name={name} visible={isTyping} onSimulate={simulateTyping} />
         {/* input for sending messages  */}
         <MessageInput onSend={handleSend} />
 

@@ -1,13 +1,13 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import {AppText} from '../../../components/common';
+import { AppText } from '../../../components/common';
 
-import {colors} from '../../../theme/colors';
-import {radius} from '../../../theme/radius';
-import {spacing} from '../../../theme/spacing';
+import { colors } from '../../../theme/colors';
+import { radius } from '../../../theme/radius';
+import { spacing } from '../../../theme/spacing';
 
-import type {Message} from '../types/chat.types';
+import type { Message } from '../types/chat.types';
 
 type MessageBubbleProps = {
   message: Message;
@@ -24,7 +24,7 @@ export const MessageBubble = ({
           ? styles.myMessageRow
           : styles.otherMessageRow,
       ]}>
-      
+
       <View
         style={[
           styles.messageBubble,
@@ -32,7 +32,7 @@ export const MessageBubble = ({
             ? styles.myMessage
             : styles.otherMessage,
         ]}>
-        
+
         <AppText
           variant="body"
           color={
@@ -53,6 +53,15 @@ export const MessageBubble = ({
           style={styles.messageTime}>
           {message.time}
         </AppText>
+
+        {message.isMine && (
+          <AppText
+            variant="caption"
+            color={message.status === 'read' ? '#60A5FA' : '#CCCCCC'}>
+            {message.status === 'sent' ? '✓' : message.status === 'delivered' ? '✓✓' : '✓✓ (Read)'}
+
+          </AppText>
+        )}
 
       </View>
     </View>
@@ -94,6 +103,12 @@ const styles = StyleSheet.create({
 
   messageTime: {
     marginTop: spacing.xs,
-    alignSelf: 'flex-end',
   },
+  timeRow: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  alignSelf: 'flex-end',
+  gap: spacing.xs,
+  marginTop: spacing.xs,
+},
 });

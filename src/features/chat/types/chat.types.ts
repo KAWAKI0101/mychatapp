@@ -1,8 +1,11 @@
+export type MessageStatus = 'sent' | 'delivered' | 'read';
+
 export type Message = {
   id: string;
   text: string;
   time: string;
   isMine: boolean;
+  status?: MessageStatus;
 };
 
 export type Chat = {
@@ -14,3 +17,5 @@ export type Chat = {
   unreadCount: number;
   online: boolean;
 };
+
+

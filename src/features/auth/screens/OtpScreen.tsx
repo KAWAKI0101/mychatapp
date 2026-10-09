@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -7,9 +7,9 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import {StackActions, useNavigation, useRoute} from '@react-navigation/native';
-import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import type {RouteProp} from '@react-navigation/native';
+import { StackActions, useNavigation, useRoute } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RouteProp } from '@react-navigation/native';
 
 import {
   AppButton,
@@ -17,11 +17,11 @@ import {
   AppText,
 } from '../../../components/common';
 
-import {colors} from '../../../theme/colors';
-import {radius} from '../../../theme/radius';
-import {spacing} from '../../../theme/spacing';
+import { colors } from '../../../theme/colors';
+import { radius } from '../../../theme/radius';
+import { spacing } from '../../../theme/spacing';
 
-import type {AuthStackParamList} from '../../../navigation/types';
+import type { AuthStackParamList } from '../../../navigation/types';
 
 type OtpNavigationProp = NativeStackNavigationProp<
   AuthStackParamList,
@@ -40,7 +40,7 @@ export const OtpScreen = () => {
   const navigation = useNavigation<OtpNavigationProp>();
   const route = useRoute<OtpRouteProp>();
 
-  const {phone} = route.params;
+  const { phone } = route.params;
 
   const [otp, setOtp] = useState('');
   const [secondsLeft, setSecondsLeft] = useState(RESEND_TIME);
@@ -113,49 +113,21 @@ export const OtpScreen = () => {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={styles.keyboardView}>
 
-        <View style={styles.content}>
-          <Pressable
-            onPress={handleChangeNumber}
-            style={styles.backButton}>
-            <AppText variant="bodyMedium">
-              ← Back
-            </AppText>
-          </Pressable>
+        {/* Rive animated avatar goes here */}
+        <View style={styles.avatarArea} />
 
-          <View style={styles.header}>
-            <View style={styles.logoBadge}>
-              <AppText
-                variant="h2"
-                color={colors.white}>
-                M
-              </AppText>
-            </View>
 
-            <AppText
-              variant="h1"
-              style={styles.title}>
-              Verify your number
-            </AppText>
+        <View style={styles.card}>
 
-            <AppText
-              variant="body"
-              color={colors.secondaryText}
-              style={styles.subtitle}>
-              We sent a verification code to
-            </AppText>
-
-            <AppText
-              variant="bodyMedium"
-              style={styles.phone}>
-              {phone}
-            </AppText>
-          </View>
+          <AppText variant="body" color={colors.secondaryText} style={styles.centerText}>
+            Enter the OTP sent to {phone}
+          </AppText>
 
           <Pressable
             onPress={() => inputRef.current?.focus()}
             style={styles.otpContainer}>
 
-            {Array.from({length: OTP_LENGTH}).map((_, index) => {
+            {Array.from({ length: OTP_LENGTH }).map((_, index) => {
               const digit = otp[index];
               const isActive = index === otp.length;
 
@@ -193,6 +165,7 @@ export const OtpScreen = () => {
             style={styles.verifyButton}
           />
 
+
           <View style={styles.resendContainer}>
             {secondsLeft > 0 ? (
               <AppText
@@ -218,18 +191,33 @@ export const OtpScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: spacing.lg,
+    justifyContent: 'center',
   },
 
   keyboardView: {
     flex: 1,
+    justifyContent: 'flex-end',
+  },
+  avatarArea: {
+    flex: 1, // Rive avatar area
+
+    backgroundColor: colors.black,
+  },
+  card: {
+    backgroundColor: colors.white,
+    borderTopLeftRadius: 60,
+    borderTopRightRadius: 60,
+    paddingHorizontal: spacing.xl,
+    paddingTop: spacing.xxl,
+    paddingBottom: spacing.xxl,
+    zIndex: 99,
   },
 
-  content: {
-    flex: 1,
-    justifyContent: 'center',
+  centerText: {
+    textAlign: 'center',
+    gap: spacing.md,
+    marginBottom: spacing.xl,
   },
-
   backButton: {
     position: 'absolute',
     top: spacing.lg,
@@ -270,7 +258,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: spacing.xl,
-    margin:spacing.md
+    margin: spacing.md
   },
 
   otpBox: {
@@ -298,7 +286,7 @@ const styles = StyleSheet.create({
 
   verifyButton: {
     marginBottom: spacing.xl,
-    
+
   },
 
   resendContainer: {
