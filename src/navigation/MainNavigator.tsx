@@ -1,14 +1,16 @@
 import React from 'react';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import {MainStackParamList, MainTabParamList} from './types';
+import { MainStackParamList, MainTabParamList } from './types';
 
-import {HomeScreen} from '../features/home/screens/HomeScreen';
-import {ChatListScreen} from '../features/chat/screens/ChatListScreen';
-import {RoomListScreen} from '../features/room/screens/RoomListScreen';
-import {ProfileScreen} from '../features/profile/screens/ProfileScreen';
+import { HomeScreen } from '../features/home/screens/HomeScreen';
+import { ChatListScreen } from '../features/chat/screens/ChatListScreen';
+import { RoomListScreen } from '../features/room/screens/RoomListScreen';
+import { ProfileScreen } from '../features/profile/screens/ProfileScreen';
 import ChatScreen from '../features/chat/screens/ChatScreen';
+import { CreateRoomScreen } from '../../src/features/room/screens/CreateRoomScreen';
+import { RoomProvider } from '../features/room/context/RoomContext';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
@@ -46,22 +48,25 @@ const MainTabs = () => {
 
 export const MainNavigator = () => {
   return (
-    <Stack.Navigator
-      initialRouteName="Tabs"
-      screenOptions={{
-        headerShown: false,
-      }}>
+    <RoomProvider>
+      <Stack.Navigator
+        initialRouteName="Tabs"
+        screenOptions={{
+          headerShown: false,
+        }}>
 
-      <Stack.Screen
-        name="Tabs"
-        component={MainTabs}
-      />
+        <Stack.Screen
+          name="Tabs"
+          component={MainTabs}
+        />
 
-      <Stack.Screen
-        name="Chat"
-        component={ChatScreen}
-      />
-
-    </Stack.Navigator>
+        <Stack.Screen
+          name="Chat"
+          component={ChatScreen}
+        />
+        <Stack.Screen name='CreateRoom' component={CreateRoomScreen} />
+        <Stack.Screen name="Room" component={RoomListScreen} />
+      </Stack.Navigator>
+    </RoomProvider>
   );
 };

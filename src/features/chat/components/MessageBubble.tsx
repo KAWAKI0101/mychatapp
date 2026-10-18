@@ -9,12 +9,16 @@ import { spacing } from '../../../theme/spacing';
 
 import type { Message } from '../types/chat.types';
 
+type groupPosition = 'first' | 'middle' | 'last' | 'single'
+
 type MessageBubbleProps = {
   message: Message;
+  groupPosition: groupPosition
 };
 
 export const MessageBubble = ({
   message,
+  groupPosition
 }: MessageBubbleProps) => {
   return (
     <View
@@ -28,9 +32,12 @@ export const MessageBubble = ({
       <View
         style={[
           styles.messageBubble,
-          message.isMine
-            ? styles.myMessage
-            : styles.otherMessage,
+          message.isMine ? styles.myMessage : styles.otherMessage,
+          groupPosition === 'middle' && styles.middleBubble,
+          groupPosition === 'first' &&
+          (message.isMine ? styles.myFirstBubble : styles.otherFirstBubble),
+          groupPosition === 'last' &&
+          (message.isMine ? styles.myLastBubble : styles.otherLastBubble),
         ]}>
 
         <AppText
@@ -71,7 +78,7 @@ export const MessageBubble = ({
 const styles = StyleSheet.create({
   messageRow: {
     width: '100%',
-    marginBottom: spacing.sm,
+    marginBottom: spacing.xs,
   },
 
   myMessageRow: {
@@ -105,10 +112,29 @@ const styles = StyleSheet.create({
     marginTop: spacing.xs,
   },
   timeRow: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  alignSelf: 'flex-end',
-  gap: spacing.xs,
-  marginTop: spacing.xs,
-},
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-end',
+    gap: spacing.xs,
+    marginTop: spacing.xs,
+  },
+  middleBubble: {
+    borderRadius: radius.lg,
+  },
+
+  myFirstBubble: {
+    borderBottomRightRadius: radius.xs,
+  },
+
+  myLastBubble: {
+    borderTopRightRadius: radius.xs,
+  },
+
+  otherFirstBubble: {
+    borderBottomLeftRadius: radius.xs,
+  },
+
+  otherLastBubble: {
+    borderTopLeftRadius: radius.xs,
+  },
 });

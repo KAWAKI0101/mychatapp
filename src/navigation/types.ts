@@ -31,6 +31,7 @@ export type MainStackParamList = {
         roomId: string
     };
 
+    CreateRoom: undefined;
     Settings: undefined
 }
 

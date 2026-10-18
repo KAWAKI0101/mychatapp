@@ -19,7 +19,7 @@ import type { MainStackParamList } from '../../../navigation/types';
 import { ChatHeader } from '../components/ChatHeader';
 import { Message } from '../types/chat.types';
 import { INITIAL_MESSAGES } from '../mock/message';
-import { TypingIndicator } from '../components/TypingIndicator' 
+import { TypingIndicator } from '../components/TypingIndicator'
 type ChatNavigationProp = NativeStackNavigationProp<
   MainStackParamList,
   'Chat'
@@ -29,6 +29,7 @@ type ChatRouteProp = RouteProp<
   MainStackParamList,
   'Chat'
 >;
+
 
 
 const ChatScreen = () => {
@@ -46,7 +47,7 @@ const ChatScreen = () => {
   const handleSend = (text: string) => {
 
     const trimmedText = text.trim();
-    
+
     if (!trimmedText) {
       return;
     }
@@ -62,23 +63,51 @@ const ChatScreen = () => {
     };
 
     setMessages(prev => [...prev, newMessage]);
- simulateTyping();
+    simulateTyping();
   };
 
   const simulateTyping = () => {
-  setIsTyping(true);
+    setIsTyping(true);
 
-  setTimeout(() => {
-    setIsTyping(false);
-  }, 2000);
-};
-  const renderMessage = ({
-    item,
-  }: {
-    item: Message;
-  }) => {
-    return <MessageBubble message={item} />;
+    setTimeout(() => {
+      setIsTyping(false);
+    }, 2000);
   };
+  const renderMessage = ({
+  item,
+  index,
+}: {
+  item: Message;
+  index: number;
+}) => {
+  const previousMessage = messages[index - 1];
+  const nextMessage = messages[index + 1];
+
+  const sameAsPrevious =
+    previousMessage?.isMine === item.isMine;
+
+  const sameAsNext =
+    nextMessage?.isMine === item.isMine;
+
+  let groupPosition: 'first' | 'middle' | 'last' | 'single';
+
+  if (!sameAsPrevious && !sameAsNext) {
+    groupPosition = 'single';
+  } else if (!sameAsPrevious) {
+    groupPosition = 'first';
+  } else if (!sameAsNext) {
+    groupPosition = 'last';
+  } else {
+    groupPosition = 'middle';
+  }
+
+  return (
+    <MessageBubble
+      message={item}
+      groupPosition={groupPosition}
+    />
+  );
+};
 
   return (
     <AppContainer style={styles.container}>
