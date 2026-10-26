@@ -10,6 +10,7 @@ import { RoomListScreen } from '../features/room/screens/RoomListScreen';
 import { ProfileScreen } from '../features/profile/screens/ProfileScreen';
 import ChatScreen from '../features/chat/screens/ChatScreen';
 import { CreateRoomScreen } from '../../src/features/room/screens/CreateRoomScreen';
+import { RoomChatScreen } from '../../src/features/room/screens/RoomChatScreen';
 import { RoomProvider } from '../features/room/context/RoomContext';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -65,7 +66,8 @@ export const MainNavigator = () => {
           component={ChatScreen}
         />
         <Stack.Screen name='CreateRoom' component={CreateRoomScreen} />
-        <Stack.Screen name="Room" component={RoomListScreen} />
+         <Stack.Screen name="Room" component={RoomChatScreen} />
+        
       </Stack.Navigator>
     </RoomProvider>
   );
