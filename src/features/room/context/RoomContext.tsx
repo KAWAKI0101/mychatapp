@@ -46,28 +46,30 @@ export const RoomProvider = ({ children }: { children: ReactNode }) => {
     )
 
     const sendMessage = useCallback((roomId: string, text: string) => {
-        const trimmedText = text.trim()
+        const trimmedText = text.trim();
+
         if (!trimmedText) {
-            return
+            return;
         }
 
         const message: RoomMessage = {
             id: `message-${Date.now()}-${Math.random()}`,
             text: trimmedText,
-            time: new Date().toLocaleDateString([], {
+            time: new Date().toLocaleTimeString([], {
                 hour: '2-digit',
-                minute: '2-digit'
+                minute: '2-digit',
             }),
-            isMine: true
-        }
-        setRooms(previous => previous.map(room =>
-            room.id === roomId ? { ...room, message: [...room.messages, message] }
-                : room
-        ))
-    },
-        []
-    )
+            isMine: true,
+        };
 
+        setRooms(previous =>
+            previous.map(room =>
+                room.id === roomId
+                    ? { ...room, messages: [...room.messages, message] }
+                    : room,
+            ),
+        );
+    }, []);
     return (
         <RoomContext.Provider value={{ rooms, createRoom, sendMessage }}>
             {children}
